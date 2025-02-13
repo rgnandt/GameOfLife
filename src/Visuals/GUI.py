@@ -9,19 +9,22 @@ class GUI(tk.Tk):
         self.resizable(False, False)
         self.grid = grid
         self.title("Game of Life")
+
         self.grid_frame = ttk.Frame(self)
         self.grid_frame.grid(row=0, column=0)
         self.grid_visualizer = CanvasGrid(self.grid_frame, grid)
+
+        self.control_frame = ttk.Frame(self)
+        self.control_frame.grid(row=1, column=0)
         self.set_up_buttons()
+
         self.running = False
         self.mainloop()
 
     def set_up_buttons(self):
-        self.control_frame = ttk.Frame(self)
-        self.control_frame.grid(row=1, column=0)
+        self.buttons = dict()
         self.button_functions = {"Start": self.run, "Stop": self.stop, "Step": self.step_forward,
                                 "Step back": self.step_backward, "Clear": self.clear}
-        self.buttons = dict()
 
         for name, function in self.button_functions.items():
             self.buttons[name] = ttk.Button(self.control_frame, text=name, command=function)
