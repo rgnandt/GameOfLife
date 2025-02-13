@@ -1,4 +1,4 @@
-from GameOfLife import GameOfLife
+from src.GameOfLife import GameOfLife
 
 def main():
     game = GameOfLife()

@@ -1,5 +1,5 @@
-from Logic.Grid import Grid
-from Visuals.GUI import GUI
+from .Logic.Grid import Grid
+from .Visuals.GUI import GUI
 
 class GameOfLife:
     def __init__(self):
