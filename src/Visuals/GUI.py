@@ -32,21 +32,21 @@ class GUI(tk.Tk):
         for i, button in enumerate(self.buttons.values()):
             button.grid(row=0, column=i)
 
+    def update_screen(self):
+        self.grid_visualizer.draw()
+
     def step_forward(self):
         self.grid.step()
-        self.tick()
+        self.update_screen()
 
     def step_backward(self):
         self.grid.step_back()
-        self.tick()
+        self.update_screen()
 
     def tick(self):
-        # advance label grid one step
-        self.grid_visualizer.draw()
-
-        # queue next tick
         if self.running:
             self.grid.step()
+            self.update_screen()
             self.after(500, self.tick)
 
     def run(self):
@@ -67,4 +67,4 @@ class GUI(tk.Tk):
 
     def clear(self):
         self.grid.clear_grid()
-        self.grid_visualizer.draw()
+        self.update_screen()
