@@ -51,9 +51,10 @@ class CanvasGrid():
         if self.user_interaction:
             x, y = self.screen_to_grid(event.x, event.y)
             if (x, y) not in self.click_buffer:
-                self.grid.set_field(x, y, 1)
-                self.draw()
-                self.click_buffer.add((x, y))
+                if (0 <= x < self.grid.width) and (0 <= y < self.grid.height):
+                    self.grid.set_field(x, y, 1)
+                    self.draw()
+                    self.click_buffer.add((x, y))
 
     def drag_right_click(self, event):
         if self.user_interaction:
