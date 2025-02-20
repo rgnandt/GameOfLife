@@ -44,10 +44,11 @@ class GUI(tk.Tk):
         self.update_screen()
 
     def tick(self):
-        if self.running:
-            self.grid.step()
+        if self.running and self.grid.step():
             self.update_screen()
             self.after(500, self.tick)
+        else:
+            self.stop()
 
     def run(self):
         self.running = True

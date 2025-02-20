@@ -69,11 +69,23 @@ class Grid:
                     if alive_neighbors == 3:
                         state = self.alive
                 _grid[y][x] = state
+
         self.grid_history.append(self.grid)
+        # if there was no change, don't step
+        if self.grid_equal(_grid, self.grid):
+            return False
         self.grid = _grid
         self.set_neighbor_grid()
+        return True
 
     def step_back(self):
         if self.grid_history:
             self.grid = self.grid_history.pop(-1)
             self.set_neighbor_grid()
+
+    def grid_equal(self, g1, g2):
+        for i in range(len(g1)):
+            for j in range(len(g1[0])):
+                if g1[i][j] != g2[i][j]:
+                    return False
+        return True
