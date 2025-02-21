@@ -1,4 +1,5 @@
 import tkinter as tk
+from argparse import ArgumentError
 from tkinter import ttk
 from src.Logic.Grid import Grid
 
@@ -6,19 +7,19 @@ class CanvasGrid():
     def __init__(self, parent: ttk.Frame, _grid: Grid):
         self.parent = parent
         self.grid = _grid
+        self.alive_color = 'black'
+        self.dead_color = 'white'
         self.square_side = 20
         self.width = self.grid.width * self.square_side
         self.height = self.grid.height * self.square_side
-        self.alive_color = 'black'
-        self.dead_color = 'white'
         self.user_interaction = True
 
         self.canvas = tk.Canvas(self.parent, width=self.width, height=self.height)
         self.canvas.grid(row=0, column=0)
-        self.canvas.bind("<ButtonPress-1>", self.click)
-        self.canvas.bind("<B1-Motion>", self.drag_left_click)
+        self.canvas.bind("<ButtonPress-1>", lambda e, x="toggle": self.click(e, x))
+        self.canvas.bind("<B1-Motion>", lambda e, x="alive" : self.click(e, x))
+        self.canvas.bind("<B3-Motion>", lambda e, x="dead": self.click(e, x))
         self.canvas.bind("<ButtonRelease-1>", self.reset_buffer)
-        self.canvas.bind("<B3-Motion>", self.drag_right_click)
         self.canvas.bind("<ButtonRelease-3>", self.reset_buffer)
         self.click_buffer = set()
 
@@ -39,30 +40,21 @@ class CanvasGrid():
     def screen_to_grid(self, x, y):
         return x // self.square_side, y // self.square_side
 
-    def click(self, event):
-        if self.user_interaction:
-            x, y = self.screen_to_grid(event.x, event.y)
-            self.grid.toggle_field(x, y)
-            self.draw()
-            # add to buffer to prevent setting tile to alive after it was just toggled to dead
-            self.click_buffer.add((x, y))
-
-    def drag_left_click(self, event):
+    def click(self, event, mode: str):
         if self.user_interaction:
             x, y = self.screen_to_grid(event.x, event.y)
             if (x, y) not in self.click_buffer:
                 if (0 <= x < self.grid.width) and (0 <= y < self.grid.height):
-                    self.grid.set_field(x, y, 1)
-                    self.draw()
-                    self.click_buffer.add((x, y))
+                    if mode == "toggle":
+                        self.grid.toggle_field(x, y)
+                    elif mode == "alive":
+                        self.grid.set_field(x, y, 1)
+                    elif mode == "dead":
+                        self.grid.set_field(x, y, 0)
 
-    def drag_right_click(self, event):
-        if self.user_interaction:
-            x, y = self.screen_to_grid(event.x, event.y)
-            if (x, y) not in self.click_buffer:
-                self.grid.set_field(x, y, 0)
-                self.draw()
-                self.click_buffer.add((x, y))
+                    self.draw()
+                    # add to buffer to prevent changing a tile multiple times during one drag
+                    self.click_buffer.add((x, y))
 
     def reset_buffer(self, event=None):
         self.click_buffer = set()
