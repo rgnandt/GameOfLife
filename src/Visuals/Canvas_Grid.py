@@ -33,7 +33,7 @@ class CanvasGrid:
     def draw_square(self, x, y):
         _x = x*self.square_side
         _y = y*self.square_side
-        color = self.alive_color if self.grid.is_alive(x, y) else self.dead_color
+        color = self.alive_color if self.grid.is_alive(width=x, height=y) else self.dead_color
         self.canvas.create_rectangle(_x, _y, _x+self.square_side, _y+self.square_side, fill=color, outline=color)
 
     def screen_to_grid(self, x, y):
@@ -45,11 +45,11 @@ class CanvasGrid:
             if (x, y) not in self.click_buffer:
                 if (0 <= x < self.grid.width) and (0 <= y < self.grid.height):
                     if mode == "toggle":
-                        self.grid.toggle_field(x, y)
+                        self.grid.toggle_field(width=x, height=y)
                     elif mode == "alive":
-                        self.grid.set_field(x, y, 1)
+                        self.grid.set_field(width=x, height=y, value=1)
                     elif mode == "dead":
-                        self.grid.set_field(x, y, 0)
+                        self.grid.set_field(width=x, height=y, value=0)
 
                     self.draw()
                     # add to buffer to prevent changing a tile multiple times during one drag
