@@ -1,9 +1,8 @@
 import tkinter as tk
-from argparse import ArgumentError
 from tkinter import ttk
 from src.Logic.Grid import Grid
 
-class CanvasGrid():
+class CanvasGrid:
     def __init__(self, parent: ttk.Frame, _grid: Grid):
         self.parent = parent
         self.grid = _grid
